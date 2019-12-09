@@ -1,8 +1,6 @@
 class Twofer {
     String twofer(String name) {
-        return String.format(
-            "One for %s, one for me.",
-            (name == null || name.isEmpty()) ? "you" : name
-        );
+        String twoFerName = (name == null || name.isEmpty()) ? "you" : name;
+        return "One for " + twoFerName + ", one for me.";
     }
 }
