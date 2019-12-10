@@ -4,11 +4,7 @@
 #include <stdexcept>
 
 namespace triangle {
-namespace flavor {
-constexpr int equilateral = 0;
-constexpr int isosceles = 1;
-constexpr int scalene = 2;
-}
+enum class flavor { equilateral, isosceles, scalene };
 
 template <typename T>
 bool isValid(T a, T b, T c) {
@@ -17,7 +13,7 @@ bool isValid(T a, T b, T c) {
 }
 
 template <typename T>
-int kind(T a, T b, T c) {
+flavor kind(T a, T b, T c) {
   if (!isValid(a, b, c)) throw std::domain_error("");
   if (a == b && b == c)
     return flavor::equilateral;
