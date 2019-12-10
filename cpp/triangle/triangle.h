@@ -17,7 +17,7 @@ flavor kind(T a, T b, T c) {
   if (!isValid(a, b, c)) throw std::domain_error("not a triangle");
   if (a == b && b == c)
     return flavor::equilateral;
-  else if ((a == b && b != c) || (b == c && c != a) || (c == a && b != c))
+  else if (a == b || b == c || a == c)
     return flavor::isosceles;
   else if (a != b && b != c && a != c)
     return flavor::scalene;
