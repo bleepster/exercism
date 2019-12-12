@@ -19,12 +19,8 @@ flavor kind(T a, T b, T c) {
     return flavor::equilateral;
   else if (a == b || b == c || a == c)
     return flavor::isosceles;
-  else if (a != b && b != c && a != c)
-    return flavor::scalene;
   else
-    // throw an error if all conditions above are not met
-    // such condition may not exist, just being explicit
-    throw std::domain_error("unknown kind");
+    return flavor::scalene;
 }
 }  // namespace triangle
 
