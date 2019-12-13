@@ -1,19 +1,19 @@
 use std::collections::HashSet;
 
-fn make_comparable(w: &str) -> String {
-    let mut t: Vec<u8> = w.bytes().collect();
-    t.sort_by(|a, b| a.cmp(b));
-    String::from_utf8_lossy(&t).to_string()
-}
-
 pub fn anagrams_for<'a>(word: &'a str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    let _word: String = make_comparable(&word.to_lowercase());
+    let w_bytes: u32 = word
+        .to_lowercase()
+        .bytes()
+        .fold(0, |a, b| a as u32 + b as u32);
     let anagrams = possible_anagrams
         .iter()
-        .filter_map(|a| -> Option<&str> {
-            let _a = make_comparable(&a.to_lowercase());
-            match (a.to_lowercase() != word.to_lowercase(), _word == _a) {
-                (true, true) => Some(a),
+        .filter_map(|x| -> Option<&str> {
+            let x_bytes: u32 = x.to_lowercase().bytes().fold(0, |a, b| a as u32 + b as u32);
+            match (
+                &word.to_lowercase() != &x.to_lowercase(),
+                w_bytes == x_bytes,
+            ) {
+                (true, true) => Some(x),
                 _ => None,
             }
         })
