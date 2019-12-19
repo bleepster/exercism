@@ -3,6 +3,8 @@
 // convenience to get you started writing code faster.
 //
 
+const GIGASEC_IN_MS = 1e12;
+
 export const gigasecond = (date) => {
-    return new Date(date.getTime() + (1000000000 * 1000));
+    return new Date(date.getTime() + GIGASEC_IN_MS);
 };
