@@ -1,26 +1,45 @@
+use std::collections::HashMap;
 use std::collections::HashSet;
 
-fn total_bytes(s: &str) -> u32 {
-    s.to_lowercase().bytes().fold(0, |a, b| a as u32 + b as u32)
+fn create_char_map(s: &str) -> HashMap<char, u32> {
+    let mut m = HashMap::new();
+    for c in s.chars() {
+        if let Some(x) = m.get_mut(&c) {
+            *x = *x + 1;
+        } else {
+            m.insert(c, 1);
+        }
+    }
+    m
+}
+
+fn is_match(word: &HashMap<char, u32>, maybe_anagram: &HashMap<char, u32>) -> bool {
+    for (k, v) in word.iter() {
+        if let Some(x) = maybe_anagram.get(&k) {
+            if v != x {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    true
 }
 
 pub fn anagrams_for<'a>(word: &'a str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-    let w_bytes: u32 = total_bytes(word);
-    let is_word_ascii = word.chars().all(|c| c.is_ascii());
-    let w_lower = word.to_lowercase();
+    let w_lowered = word.to_lowercase();
+    let w_mapped = create_char_map(&w_lowered);
     let anagrams = possible_anagrams
         .iter()
-        .filter_map(|x| -> Option<&str> {
-            let x_lower = &x.to_lowercase();
+        .filter_map(|a| -> Option<&str> {
+            let a_lowered = a.to_lowercase();
+            let a_mapped = create_char_map(&a_lowered);
             match (
-                &w_lower != x_lower, // not equal to self regardless of case
-                is_word_ascii && x.chars().all(|c| c.is_ascii()), // both words are ascii
-                w_bytes == total_bytes(x), // equal by bytes, regardless of order
-                word == w_lower && x == x_lower, // non-ascii and no case
-                &word == x,          // exact match
+                word.len() == a.len(),
+                w_lowered != a_lowered,
+                is_match(&w_mapped, &a_mapped),
             ) {
-                (true, true, true, _, _) => Some(x),
-                (true, false, true, false, false) => Some(x),
+                (true, true, true) => Some(a),
                 _ => None,
             }
         })
