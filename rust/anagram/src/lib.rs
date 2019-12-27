@@ -33,9 +33,10 @@ pub fn anagrams_for<'a>(word: &'a str, possible_anagrams: &[&'a str]) -> HashSet
             }
 
             if !w.is_empty() {
-                return None;
+                None
+            } else {
+                Some(a)
             }
-            Some(a)
         })
         .collect::<Vec<&str>>();
     HashSet::from(anagrams.iter().cloned().collect())
