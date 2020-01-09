@@ -15,9 +15,7 @@ impl From<u64> for Duration {
 }
 
 pub trait Planet {
-    fn years_during(d: &Duration) -> f64 {
-        d.value
-    }
+    fn years_during(d: &Duration) -> f64;
 }
 
 pub struct Mercury;
