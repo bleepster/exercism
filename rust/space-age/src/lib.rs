@@ -13,12 +13,12 @@ impl From<u64> for Duration {
 }
 
 pub trait Planet {
-    const EA_SECONDS: f64 = 31557600.0;
+    const ED_SECONDS: f64 = 31557600.0;
     const EARTH_YEARS: f64;
 
     fn years_during(d: &Duration) -> f64 {
         let duration = d.value as f64;
-        (duration / Self::EA_SECONDS) / Self::EARTH_YEARS
+        (duration / Self::ED_SECONDS) / Self::EARTH_YEARS
     }
 }
 
