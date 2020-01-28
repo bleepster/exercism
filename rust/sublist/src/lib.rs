@@ -6,15 +6,38 @@ pub enum Comparison {
     Unequal,
 }
 
+trait Compare {
+    fn is_sublist(&self, other: &Self) -> bool;
+}
+
+impl<T: PartialEq + Copy> Compare for &[T] {
+    fn is_sublist(&self, other: &Self) -> bool {
+        if self.len() == 0 {
+            return true;
+        }
+
+        let pos = other.iter().position(|&v| v == self[0]);
+        if pos == None {
+            return false;
+        }
+
+        let start = pos.unwrap();
+        let end = self.len() + start;
+        let slice = &other[start..end];
+
+        slice.iter().eq(self.iter())
+    }
+}
+
 pub fn sublist<T: PartialEq>(_first_list: &[T], _second_list: &[T]) -> Comparison {
     match (
-        _first_list.len() < _second_list.len() && &_second_list[0.._first_list.len()] == _first_list,
-        _second_list.len() < _first_list.len() && &_first_list[0.._second_list.len()] == _second_list,
         _first_list == _second_list,
+        _first_list.is_sublist(_second_list),
+        _second_list.is_sublist(_first_list),
     ) {
-        (true, _, _) => Comparison::Sublist,
-        (false, true, _) => Comparison::Superlist,
-        (false, false, true) => Comparison::Equal,
+        (true, _, _) => Comparison::Equal,
+        (false, true, _) => Comparison::Sublist,
+        (false, false, true) => Comparison::Superlist,
         _ => Comparison::Unequal,
     }
 }
