@@ -16,6 +16,10 @@ impl<T: PartialEq + Copy> Compare for &[T] {
             return true;
         }
 
+        if self.len() > other.len() {
+            return false;
+        }
+
         let pos = other.iter().position(|&v| v == self[0]);
         if pos == None {
             return false;
@@ -29,14 +33,14 @@ impl<T: PartialEq + Copy> Compare for &[T] {
     }
 }
 
-pub fn sublist<T: PartialEq>(_first_list: &[T], _second_list: &[T]) -> Comparison {
+pub fn sublist<T: PartialEq + Copy>(_first_list: &[T], _second_list: &[T]) -> Comparison {
     match (
         _first_list == _second_list,
-        _first_list.is_sublist(_second_list),
-        _second_list.is_sublist(_first_list),
+        _first_list.is_sublist(&_second_list),
+        _second_list.is_sublist(&_first_list),
     ) {
         (true, _, _) => Comparison::Equal,
-        (false, true, _) => Comparison::Sublist,
+        (false, true, false) => Comparison::Sublist,
         (false, false, true) => Comparison::Superlist,
         _ => Comparison::Unequal,
     }
