@@ -27,6 +27,11 @@ impl<T: PartialEq + Copy> Compare for &[T] {
 
         let start = pos.unwrap();
         let end = self.len() + start;
+
+        if end > other.len() {
+            return false;
+        }
+
         let slice = &other[start..end];
 
         slice.iter().eq(self.iter())
