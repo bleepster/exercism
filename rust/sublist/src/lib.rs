@@ -12,31 +12,28 @@ trait Compare {
 
 impl<T: PartialEq + Copy> Compare for &[T] {
     fn is_sublist(&self, other: &Self) -> bool {
-        if self.len() == 0 {
-            return true;
-        }
+        let self_len = self.len();
+        let other_len = other.len();
 
-        if self.len() > other.len() {
-            return false;
+        let mut result = false;
+        if self_len == 0 {
+            result = true;
         }
-
-        for other_index in 0..other.len() {
-            let mut is_list = true;
-            let mut i = 0;
-            for self_index in 0..self.len() {
-                if other_index + i >= other.len() || self[self_index] != other[other_index + i] {
-                    is_list = false;
+        else {
+            for start_index in 0..other_len {
+                let slice_max = start_index + self_len;
+                if slice_max > other_len {
                     break;
                 }
-                i = i + 1;
-            }
 
-            if is_list {
-                return true;
+                let other_slice = &other[start_index..slice_max];
+                if self.iter().eq(other_slice.iter()) {
+                    result = true;
+                    break;
+                }
             }
         }
-
-        false
+        result
     }
 }
 
