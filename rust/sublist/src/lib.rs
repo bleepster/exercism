@@ -20,26 +20,20 @@ impl<T: PartialEq + Copy> Compare for &[T] {
             return false;
         }
 
-        let mut i_self = self.iter();
-        let mut i_other = other.iter();
-
-        let mut v_self = i_self.next();
-        let mut v_sliced = i_other.next();
-
-        loop {
-            if v_sliced == None {
-                break;
+        for other_index in 0..other.len() {
+            let mut is_list = true;
+            let mut i = 0;
+            for self_index in 0..self.len() {
+                if other_index + i >= other.len() || self[self_index] != other[other_index + i] {
+                    is_list = false;
+                    break;
+                }
+                i = i + 1;
             }
 
-            if v_self != None && (v_self.unwrap() == v_sliced.unwrap()) {
-                v_self = i_self.next();
+            if is_list {
+                return true;
             }
-
-            v_sliced = i_other.next();
-        }
-
-        if v_self == None {
-            return true;
         }
 
         false
