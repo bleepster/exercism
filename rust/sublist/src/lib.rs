@@ -1,4 +1,7 @@
+use std::cmp::Ordering;
+
 #[derive(Debug, PartialEq)]
+
 pub enum Comparison {
     Equal,
     Sublist,
@@ -10,42 +13,29 @@ trait Compare {
     fn is_sublist(&self, other: &Self) -> bool;
 }
 
-impl<T: PartialEq + Copy> Compare for &[T] {
+impl<T: PartialEq> Compare for &[T] {
     fn is_sublist(&self, other: &Self) -> bool {
-        let self_len = self.len();
-        let other_len = other.len();
-
-        let mut result = false;
-        if self_len == 0 {
-            result = true;
-        }
-        else {
-            for start_index in 0..other_len {
-                let slice_max = start_index + self_len;
-                if slice_max > other_len {
-                    break;
-                }
-
-                let other_slice = &other[start_index..slice_max];
-                if self.iter().eq(other_slice.iter()) {
-                    result = true;
-                    break;
-                }
-            }
-        }
-        result
+        other.windows(self.len()).any(|other| &other == self)
     }
 }
 
-pub fn sublist<T: PartialEq + Copy>(_first_list: &[T], _second_list: &[T]) -> Comparison {
-    match (
-        _first_list == _second_list,
-        _first_list.is_sublist(&_second_list),
-        _second_list.is_sublist(&_first_list),
-    ) {
-        (true, _, _) => Comparison::Equal,
-        (false, true, false) => Comparison::Sublist,
-        (false, false, true) => Comparison::Superlist,
-        _ => Comparison::Unequal,
+pub fn sublist<T: PartialEq>(first: &[T], second: &[T]) -> Comparison {
+    match first.len().cmp(&second.len()) {
+        Ordering::Equal => {
+            if first == second {
+                return Comparison::Equal;
+            }
+        }
+        Ordering::Less => {
+            if first.is_empty() || first.is_sublist(&second) {
+                return Comparison::Sublist;
+            }
+        }
+        Ordering::Greater => {
+            if second.is_empty() || second.is_sublist(&first) {
+                return Comparison::Superlist;
+            }
+        }
     }
+    return Comparison::Unequal;
 }
